@@ -8,32 +8,32 @@ Online-express
 开发语言要求用 NodeJS。  
 
 使用本框架的好处是：把 WebService 跑起来后，你可以在线更新程序逻辑，即：Online-express 框架提供一种插件机制，
-可以动态更新各插件的处理逻辑，在软件调测阶段使用它，可以避免服务侧程序反复重启，提交持续集成的工作效率。
+可以动态更新各插件的处理逻辑，在软件调测阶段使用它，可以避免服务侧程序反复重启，提高持续敏捷开发的效率。
 
 使用方法
 -------
 
-第1步：克隆本项目
+**第1步**：克隆本项目
 
 ```
 git clone https://github.com/cse-soft/online-express.git
 cd online-express
 ```
 
-第2步：在本机启动 WebService，以此模拟服务侧程序
+**第2步**：在本机启动 WebService，以此模拟服务侧程序
 
 ```
 DEBUG=myapp:* npm start
 ```
 
-注：这种启动方式是 Express 框架要求的，更多启动方式请参考 Express 文档。
+注：这个启动采用 Express 建议的方式，更多启动参数请参考 Express 文档。
 
-第3步：在 Web 浏览器中打开： http://localhost:3000/
+**第3步**：在 Web 浏览器中打开： `http://localhost:3000/`
 
 当你看到界面有 "Welcome to Express" 信息显示时，表明前面操作都是正确的。到这一步，展示的功能实际上是
 express 框架自身就带的。接下来，我们要展示在线编辑与在线更新服务侧代码。
 
-第4步：在 Web 浏览器新建一页中打开： http://localhost:3000/develop/editor.html
+**第4步**：在 Web 浏览器新建一页中打开： `http://localhost:3000/develop/editor.html`
 
 打开编辑器界面后，点击右侧 *load source file* 按钮（右上角第3个按钮），导入 trunk.js 文件，
 这个文件在工程路径的 plugins 子目录下，已被服务侧程序导入使用。
@@ -41,10 +41,10 @@ express 框架自身就带的。接下来，我们要展示在线编辑与在线
 如下图，把源码 `{ title: 'Express' }` 改成 `{ title: 'My Express' }`，然后按 ctrl+s（或cmd+s）
 热键保存。
 
-第5步：在线更新程序
+**第5步**：在线更新程序
 
-把上一步修改直接更新到 WebService 服务中，按 ctrl+alt+s（或cmd+alt+s）热键即完成更新。
-回到早些我们已打开的 localhost:3000 页面，刷新（重新导入）这个面页，您可发现标题将变换到 "My Express"，
+现在把上一步修改，直接更新到 WebService 服务中去，按 ctrl+alt+s（或cmd+alt+s）热键即完成更新。
+回到早些我们已打开的 `localhost:3000` 页面，刷新（重新导入）这个面页，您可发现标题将变换到 "My Express"，
 说明我们刚修改的代码已经生效了。
 
 如何定义插件？
@@ -64,7 +64,7 @@ exports = module.exports = {
 };
 ```
 
-你可以自己追加一个插件文件，比如：test.js，新增插件处理 "/test/..." 的 Web 请求，上面代码可写成：
+你可以自己追加一个插件文件，比如：test.js，新增插件处理 "/test/..." 的 Web 请求，上面代码可写成如下样子：
 
 ```
 exports = module.exports = {
@@ -80,7 +80,7 @@ exports = module.exports = {
 };
 ```
 
-然后仿照 trunk.js 的代码，编写类似下面的代码，保存到 plugins/test.js 文件中：
+然后仿照 trunk.js 的代码，编写如下代码，保存到 plugins/test.js 文件中：
 
 ```
 // static head of plugin source
@@ -103,34 +103,38 @@ testRouter.regist('GET','/test1', function(req,res,next) {
 };  // end of M.onload()
 ``` 
 
-注意：当你增加（或删除）插件文件时，服务程序需要重起！
+注意：当你增加（或删除）插件文件时，服务侧程序要重启！
 
-现有你两件插件模块了，trunk.js 与 test.js，若把这个服务程序布署到一个公共服务器，可供多人同时调测的，
+现有你两件插件模块了，trunk.js 与 test.js，如果把本服务程序布署到一个公共服务器，可供多人同时调测，
 比如：你负责开发 trunk.js，另一位同事负责 test.js。
 
 插件文件的编码要求
 ---------------
 
-因为要支持在线代码更新，插件代码要满足 **可多次、无干扰执行** 的要求。比如下面代码是满足这项要求的：
+因为要支持在线代码更新，插件代码要满足 **“可多次、无干扰执行”** 的要求。比如下面代码是满足这项要求的：
 
 ```
 var myBuff = M.myBuff = M.myBuff || [];
 ```
 
 上面 M 是当前模块，当这句代码首次执行时，`M.myBuff` 并不存在，所以 `M.myBuff = M.myBuff || [];` 
-成功在 M 下定义变量 myBuff，用 `var myBuff = M.myBuff` 再定义 myBuff 变量是为了方便使用考虑
-（否则每次都要写成 `M.myBuff`）。当这句代码第二次执行时，`myBuff` 可以取回历史旧值，第3次、
-第4次执行这个语句都是安全的，符合在线更新的逻辑。
+将在 M 下定义 myBuff 变量，用 `var myBuff = M.myBuff` 再定义 myBuff 是为了方便使用
+（否则每次都要写成 `M.myBuff`）。当这行代码第二次执行时，`myBuff` 可以取回历史旧值，第3次（及以后各次）
+执行这个语句都是安全的，符合在线更新逻辑。
 
 `Router.regist(sMethod,sPath,func)` 对 Exresss 中的 `Router[sMethod](sPath,func)`
-做了封装（参见 application.js 中代码），目的也是让 Express 的路由注册满足 **无干扰**
-可多次执行的要求，当你能改写已定义路由，也能增加新路由后，高效的持续集成框架就搭起来了。
+做了封装（参见 application.js 中代码），目的也是让 Express 的路由注册满足 **无干扰多次执行**
+的要求。这样，你能改写已定义的路由，也能增加新路由后，高效的敏捷开发环境就搭起来了。
+
+在线代码更新时，如果遇到更新失败，您可以打开浏览器的命令行窗口查看详细信息，出错时服务侧的 NodeJS 调用栈已用
+console.log() 打印。
 
 相关配置
 -------
 
-当环境变量 NODE_ENV 未定义，或其值为 `development` 时，启动的服务程序支持在线调测，如果把这个环境变量
-的值改为 `product` 再启动服务程序，在线代码更新将被关闭。
+当环境变量 NODE_ENV 未定义，或其值为 `development` 时，启动的服务程序支持在线调测，
+如果把这个环境变量的值改为 `product`，再启动服务程序，在线代码更新特性将被关闭。应用于生产的环境，
+需要关闭这个特性，否则，您的系统将残留致命后门。
 
 工程路径下的 public 目录被配置为静态目录，`public/develop` 下定义了供客户端使用的在线编辑器（见上面第4步介绍），
 `public/develop/config.json` 是在线编辑器的配置文件，你可手工修改相关配置项。
