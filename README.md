@@ -41,6 +41,8 @@ express 框架自身就带的。接下来，我们要展示在线编辑与在线
 如下图，把源码 `{ title: 'Express' }` 改成 `{ title: 'My Express' }`，然后按 ctrl+s（或cmd+s）
 热键保存。
 
+![trunk.js](trunk_src.png)
+
 **第5步**：在线更新程序
 
 现在把上一步修改，直接更新到 WebService 服务中去，按 ctrl+alt+s（或cmd+alt+s）热键即完成更新。
