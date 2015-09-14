@@ -80,7 +80,7 @@ exports = module.exports = {
 };
 ```
 
-然后仿照 trunk.js 的代码，编写如下代码，保存到 plugins/test.js 文件中：
+然后仿照 `trunk.js`，编写如下代码，保存到 `plugins/test.js` 文件中：
 
 ```
 // static head of plugin source
