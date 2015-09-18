@@ -71,7 +71,7 @@ if (isDevEnv) {
   });
   
   app.get('/develop/getsrc', function(req,res,next) {
-    var sName = req.param('name') + '';
+    var sName = req.query.name + '';
     var srcFile = path.join(__dirname,'plugins',sName);
     if (fs.existsSync(srcFile)) {
       try {
@@ -84,7 +84,7 @@ if (isDevEnv) {
   });
   
   app.put('/develop/putsrc', function(req,res,next) {
-    var sSrc = req.body.src, sName = req.body.name+'', isApply = req.body.apply;
+    var sSrc = req.body.src, sName = req.body.name+'', isApply = parseInt(req.body.apply || '0');
     var srcFile = path.join(__dirname,'plugins',sName);
     if (!fs.existsSync(srcFile)) {
       res.status(500).json({message:'source moudle (' + sName + ') inexistent'});

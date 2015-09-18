@@ -193,7 +193,7 @@
       data: {
         name: sSrcFile,
         src: sSrc,
-        apply: sTask == 'update',
+        apply: (sTask == 'update'?1:0),
       },
       
       success: function(res) {
