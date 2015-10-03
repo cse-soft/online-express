@@ -189,12 +189,13 @@
     $.ajax({ type: 'PUT', url: uploadURL,
       // if request by data=JSON.stringify(), should send with:
       //   headers: {'Content-Type':'application/json; charset=utf-8'}
-      // else, send data={} directly, default header is OK
-      data: {
+      // else, send data={} directly, default header is OK, but maybe report: 413 Request Entity Too Large
+      headers: {'Content-Type':'application/json; charset=utf-8'},
+      data: JSON.stringify({
         name: sSrcFile,
         src: sSrc,
         apply: (sTask == 'update'?1:0),
-      },
+      }),
       
       success: function(res) {
         if (sTask == 'update')
