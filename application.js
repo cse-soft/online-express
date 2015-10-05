@@ -22,8 +22,8 @@ var main = require('./plugins/main');
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 if (isDevEnv) app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true})); // true means use qs library, "user[email]=foo&user[password]=bar" is supported
+app.use(bodyParser.json({limit:'50mb'}));
+app.use(bodyParser.urlencoded({extended:true,limit:'50mb'})); // true means use qs library, "user[email]=foo&user[password]=bar" is supported
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname,'public'),{
