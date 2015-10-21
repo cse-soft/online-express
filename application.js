@@ -83,6 +83,29 @@ if (isDevEnv) {
     res.status(500).json({'message':'read module (' + sName + ') failed'});
   });
   
+  app.get('/develop/renew', function(req,res,next) {
+    var sName = req.query.name;
+    if (sName) {
+      var srcFile = path.join(__dirname,'plugins',sName);
+      if (!fs.existsSync(srcFile)) {
+        res.send('can not find source moudle (' + sName + ')');
+        return;
+      }
+      
+      try {
+        var sModPath = './plugins/' + sName;
+        delete require.cache[require.resolve(sModPath)];
+        var mod = require(sModPath);
+        if (mod.onload) mod.onload(app);
+        res.send('module (' + sName + ') renewed at ' + (new Date()).toLocaleString());
+      }
+      catch(err) {
+        res.send(err.message + '\n' + err.stack);
+      }
+    }
+    else res.send('invalid command: /develop/renew?name=module');
+  });
+  
   app.put('/develop/putsrc', function(req,res,next) {
     var sSrc = req.body.src, sName = req.body.name+'', isApply = parseInt(req.body.apply || '0');
     var srcFile = path.join(__dirname,'plugins',sName);
